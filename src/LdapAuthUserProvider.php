@@ -78,14 +78,21 @@ class LdapAuthUserProvider implements UserProvider
     public function retrieveByCredentials(array $credentials)
     {
         $username = $credentials['username'];
-        $result = $this->ldap->find($username);
 
-        if( !is_null($result) ){
+        try {
+            $result = $this->ldap->find($username);
+            if( !is_null($result) ){
             $user = new $this->model;
             $user->build( $result );
 
             return $user;
         }
+
+        }
+        catch(\Krenor\LdapAuth\Exceptions\EmptySearchResultException $e) {
+            return null;
+        }
+        
 
         return null;
     }
