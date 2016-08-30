@@ -40,7 +40,7 @@ class LdapUser implements UserContract, AuthorizableContract, LdapUserContract
      */
     public function getAuthIdentifierName()
     {
-        return 'samaccountname';
+        return 'uid';
     }
 
 
@@ -148,8 +148,9 @@ class LdapUser implements UserContract, AuthorizableContract, LdapUserContract
      */
     private function buildAttributesFromLdap($entry)
     {
-        $this->attributes['dn']   = $entry['dn'];
 
+        $this->attributes['dn']   = $entry['dn'];
+        $this->attributes['name'] = $entry['uid'][0];
         // Set the attributes accordingly to the search fields given
         foreach($entry as $index => $key){
             if(array_key_exists($index, config('ldap.search_fields'))){
